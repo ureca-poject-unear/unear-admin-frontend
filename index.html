@@ -4,31 +4,437 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNEAR ADMIN - 로그인</title>
-    <link rel="stylesheet" href="css/login.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input:hover {
+            border-color: #ccc;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 6px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+
+        .error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff3d;
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .login-btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .main-link {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .main-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e1e5e9;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
     <div class="login-container">
         <div class="login-header">
             <h1>UNEAR ADMIN</h1>
+            <p>관리자 로그인</p>
         </div>
         
         <form id="loginForm">
             <div class="form-group">
-                <label for="username">ID</label>
-                <input type="text" id="username" name="username" required value="admin@test.com">
+                <label for="username">이메일</label>
+                <input type="email" id="username" name="username" required value="admin@test.com" placeholder="이메일을 입력하세요">
                 <div class="error-message" id="usernameError"></div>
             </div>
             
             <div class="form-group">
                 <label for="password">비밀번호</label>
-                <input type="password" id="password" name="password" required value="1234">
+                <input type="password" id="password" name="password" required value="1234" placeholder="비밀번호를 입력하세요">
                 <div class="error-message" id="passwordError"></div>
             </div>
             
-            <button type="submit" class="login-btn">로그인</button>
+            <button type="submit" class="login-btn" id="loginButton">
+                <span class="spinner"></span>
+                <span class="btn-text">로그인</span>
+            </button>
+
         </form>
     </div>
-    <script src="js/config.js"></script>
-    <script src="js/login.js"></script>
+
+    <script>
+        // API 설정
+        const API_CONFIG = {
+            BASE_URL: 'http://localhost:8082',
+            ENDPOINTS: {
+                LOGIN: '/auth/login',
+                LOGOUT: '/auth/logout'
+            }
+        };
+
+        // 통합된 SessionManager
+        const SessionManager = {
+            set: (sessionInfo) => {
+                // 두 방식 모두 지원
+                localStorage.setItem('posSessionInfo', JSON.stringify(sessionInfo));
+                sessionStorage.setItem('admin', JSON.stringify(sessionInfo));
+            },
+
+            get: () => {
+                // localStorage 우선, 없으면 sessionStorage 확인
+                const stored = localStorage.getItem('posSessionInfo') || sessionStorage.getItem('admin');
+                return stored ? JSON.parse(stored) : null;
+            },
+
+            clear: () => {
+                localStorage.removeItem('posSessionInfo');
+                sessionStorage.removeItem('admin');
+            },
+
+            isLoggedIn: () => {
+                return SessionManager.get() !== null;
+            }
+        };
+
+        // 개선된 API 호출 함수
+        const apiCall = async (endpoint, options = {}) => {
+            const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+
+            const defaultOptions = {
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            const mergedOptions = { ...defaultOptions, ...options };
+
+            try {
+                console.log('🔄 API 요청:', url, mergedOptions);
+                const response = await fetch(url, mergedOptions);
+                console.log('📡 응답 상태:', response.status, response.statusText);
+
+                let data = null;
+                const contentType = response.headers.get('content-type');
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    const text = await response.text();
+                    if (text) {
+                        try {
+                            data = JSON.parse(text);
+                        } catch (e) {
+                            console.warn('응답을 JSON으로 파싱할 수 없음:', text);
+                            data = { message: text };
+                        }
+                    }
+                }
+
+                console.log('📝 응답 데이터:', data);
+
+                return {
+                    success: response.ok && (data?.code === 'SUCCESS' || data?.success === true),
+                    data: data?.data || data,
+                    message: data?.message || (response.ok ? '성공' : '요청 실패'),
+                    status: response.status,
+                    code: data?.code
+                };
+            } catch (error) {
+                console.error('❌ API 호출 오류:', error);
+                return {
+                    success: false,
+                    error: error.message,
+                    message: '네트워크 오류가 발생했습니다.',
+                    status: 0
+                };
+            }
+        };
+
+        // 에러 메시지 표시 함수
+        const showError = (elementId, message) => {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+            
+            setTimeout(() => {
+                errorElement.classList.remove('show');
+            }, 4000);
+        };
+
+        // 로딩 상태 관리
+        const setLoading = (isLoading) => {
+            const loginButton = document.getElementById('loginButton');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            if (isLoading) {
+                loginButton.classList.add('loading');
+                loginButton.disabled = true;
+                loginButton.querySelector('.btn-text').textContent = '로그인 중...';
+                loadingOverlay.style.display = 'flex';
+            } else {
+                loginButton.classList.remove('loading');
+                loginButton.disabled = false;
+                loginButton.querySelector('.btn-text').textContent = '로그인';
+                loadingOverlay.style.display = 'none';
+            }
+        };
+
+        // 로그인 폼 이벤트 리스너
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // 입력 검증
+            if (!email) {
+                showError('usernameError', '이메일을 입력해주세요.');
+                return;
+            }
+            
+            if (!password) {
+                showError('passwordError', '비밀번호를 입력해주세요.');
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                const result = await apiCall(API_CONFIG.ENDPOINTS.LOGIN, {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+
+                console.log('로그인 결과:', result);
+
+                if (result.success) {
+                    // 세션 정보 저장
+                    SessionManager.set(result.data);
+                    
+                    // 성공 메시지
+                    alert('로그인 성공!');
+                    
+                    // 메인 페이지로 리다이렉트
+                    window.location.href = './html/main.html';
+                } else {
+                    showError('passwordError', result.message || '로그인에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('로그인 오류:', error);
+                showError('passwordError', '서버 연결에 실패했습니다.');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // 페이지 로드 시 이미 로그인된 경우 체크
+        document.addEventListener('DOMContentLoaded', () => {
+            if (SessionManager.isLoggedIn()) {
+                console.log('이미 로그인된 사용자');
+                // 필요시 자동으로 메인 페이지로 리다이렉트
+                // window.location.href = './html/main.html';
+            }
+        });
+
+        // Enter 키로 폼 제출 지원
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
 </body>
 </html>
