@@ -1,34 +1,66 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UNEAR ADMIN - 메인</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            background: #f8f9fa;
-            padding: 2rem;
-        }
-        h1 {
-            color: #333;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/main.css" />
 </head>
 <body>
-    <h1 id="welcomeMessage">환영합니다!</h1>
-    <p>이곳은 UNEAR 관리자 메인 페이지입니다.</p>
+    <div class="header">
+        <div class="header-left">
+            <h1>UNEAR ADMIN</h1>
+            <div class="welcome-message" id="welcomeMessage">관리자 대시보드에 오신 것을 환영합니다</div>
+        </div>
+        <div class="header-right">
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <span id="userName">관리자</span>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+        </div>
+    </div>
 
-    <script src="../js/config.js"></script>
-    <script>
-        const admin = SessionManager.get();
-        if (admin && admin.name) {
-            document.getElementById('welcomeMessage').textContent =
-                `환영합니다, ${admin.name}님!`;
-        } else {
-            // 세션 정보 없으면 로그인 페이지로 리다이렉트
-            alert("로그인이 필요합니다.");
-            window.location.href = "../index.html";
-        }
-    </script>
+    <div class="main-grid">
+        <div class="card dashboard-card" onclick="navigateTo('dashboard')">
+            <div class="card-icon">📊</div>
+            <div class="card-title">대시보드</div>
+            <div class="card-description">전체 시스템 현황을 한눈에 확인하고 주요 지표들을 모니터링하세요</div>
+            <div class="card-stats">
+                <div class="stat-item"><span class="stat-number" id="totalEvents">-</span><div class="stat-label">총 이벤트</div></div>
+                <div class="stat-item"><span class="stat-number" id="totalCoupons">-</span><div class="stat-label">쿠폰 수</div></div>
+                <div class="stat-item"><span class="stat-number" id="totalPartners">-</span><div class="stat-label">제휴처</div></div>
+            </div>
+            <div class="card-action">대시보드 보기 →</div>
+        </div>
+
+        <div class="card event-card" onclick="navigateTo('partners')">
+            <div class="card-icon">🏪</div>
+            <div class="card-title">제휴처 관리</div>
+            <div class="card-description">제휴 매장을 등록하고 파트너십을 관리하세요</div>
+            <div class="card-action">제휴처 관리 →</div>
+        </div>
+
+        <div class="card coupon-card" onclick="navigateTo('coupons')">
+            <div class="card-icon">🎫</div>
+            <div class="card-title">쿠폰 관리</div>
+            <div class="card-description">쿠폰 템플릿을 생성하고 쿠폰을 관리하세요</div>
+            <div class="card-action">쿠폰 관리 →</div>
+        </div>
+
+        <div class="card partner-card" onclick="navigateTo('events')">
+            <div class="card-icon">🎉</div>
+            <div class="card-title">이벤트 등록</div>
+            <div class="card-description">새로운 이벤트를 생성하고 기존 이벤트를 관리하세요</div>
+            <div class="card-action">이벤트 관리 →</div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <button class="quick-action-btn add-event-btn" onclick="navigateTo('events')" title="새 이벤트 추가">➕</button>
+        <button class="quick-action-btn settings-btn" onclick="navigateTo('settings')" title="설정">⚙️</button>
+    </div>
+
+    <script src="../js/main.js"></script>
 </body>
 </html>
