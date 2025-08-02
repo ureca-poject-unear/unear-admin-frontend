@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNEAR ADMIN - 이벤트 제휴처 관리</title>
+    <link rel="stylesheet" href="../css/event_place.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()" title="뒤로가기">
+                ←
+            </button>
+            <div class="header-title">
+                <h1>이벤트 제휴처 관리</h1>
+                <div class="header-subtitle">반경 내 제휴처를 선택하여 이벤트에 등록하세요</div>
+            </div>
+        </div>
+        <div class="event-info" id="eventInfo">
+            <div class="event-icon">⏳</div>
+            <div>
+                <div>이벤트 정보 로딩 중...</div>
+                <div style="font-size: 12px; opacity: 0.8;">eventId 확인 중</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- 제휴처 목록 -->
+        <div class="partners-card">
+            <div class="card-title">
+                <div class="card-icon">🏢</div>
+                반경 내 제휴처 목록
+            </div>
+            <div class="card-subtitle">이벤트 반경 내에 있는 제휴처들을 확인하고 선택하세요</div>
+
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="제휴처 이름으로 검색...">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">전체 카테고리</option>
+                    <option value="FOOD">푸드</option>
+                    <option value="LIFE">생활/편의</option>
+                    <option value="BEAUTY">뷰티/건강</option>
+                    <option value="ACTIVITY">액티비티</option>
+                    <option value="EDUCATION">교육</option>
+                    <option value="CULTURE">문화/여가</option>
+                    <option value="BAKERY">베이커리</option>
+                    <option value="SHOPPING">쇼핑</option>
+                    <option value="CAFE">카페</option>
+                </select>
+            </div>
+
+            <div id="messageContainer"></div>
+
+            <div class="partners-list" id="partnersList">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <div>반경 내 제휴처를 검색하고 있습니다...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 선택 요약 -->
+        <div class="summary-card">
+            <div class="card-title">
+                <div class="card-icon">✅</div>
+                선택 요약
+            </div>
+            <div class="card-subtitle">선택한 제휴처들을 확인하고 등록하세요</div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">전체 제휴처</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="selectedCount">0</div>
+                    <div class="stat-label">선택된 제휴처</div>
+                </div>
+            </div>
+
+            <div class="selected-list" id="selectedList">
+                <div class="empty-state" style="padding: 30px 10px;">
+                    <div class="empty-icon">📝</div>
+                    <div>선택된 제휴처가 없습니다</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="clearAllSelections()">
+                    전체 해제
+                </button>
+                <button class="btn btn-primary" id="registerBtn" onclick="registerPartners()" disabled>
+                    <span class="btn-text">제휴처 등록</span>
+                </button>
+            </div>
+        </div>
+    </div>
+<script src="../js/event_place.js"></script>
+</body>
+</html>

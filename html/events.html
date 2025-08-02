@@ -1,54 +1,121 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>이벤트 등록</title>
-  <link rel="stylesheet" href="../css/events.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNEAR ADMIN - 이벤트 관리</title>
+    <link rel="stylesheet" href="../css/events.css">
 </head>
 <body>
-  <div class="container">
-    <h1>이벤트 등록</h1>
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()" title="뒤로가기">
+                ←
+            </button>
+            <div class="header-title">
+                <h1>이벤트 관리</h1>
+                <div class="header-subtitle">새로운 이벤트를 생성하고 관리하세요</div>
+            </div>
+        </div>
+        <div class="user-info" id="userInfo">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <span id="userName">관리자</span>
+        </div>
+    </div>
 
-    <form id="eventForm">
-      <div class="form-group">
-        <label for="eventName">이벤트 이름</label>
-        <input type="text" id="eventName" name="eventName" placeholder="이벤트 이름을 입력하세요" required />
-      </div>
+    <div class="main-container">
+        <!-- 이벤트 등록 폼 -->
+        <div class="form-card">
+            <div class="card-title">
+                <div class="card-icon">🎉</div>
+                이벤트 정보 입력
+            </div>
+            <div class="card-subtitle">이벤트 기본 정보를 입력해주세요</div>
 
-      <div class="form-group">
-        <label for="description">이벤트 설명</label>
-        <textarea id="description" name="description" rows="4" placeholder="이벤트 설명을 입력하세요" required></textarea>
-      </div>
+            <form id="eventForm">
+                <div class="form-group">
+                    <label for="eventName">이벤트 이름</label>
+                    <input type="text" id="eventName" name="eventName" 
+                           placeholder="예: 부산 맛집 투어 이벤트" required>
+                    <div class="error-message" id="eventNameError"></div>
+                </div>
 
-      <div class="form-group">
-        <label for="latitude">위도</label>
-        <input type="number" id="latitude" name="latitude" step="any" placeholder="37.5665" required />
-      </div>
+                <div class="form-group">
+                    <label for="description">이벤트 설명</label>
+                    <textarea id="description" name="description" 
+                              placeholder="이벤트에 대한 자세한 설명을 입력해주세요" required></textarea>
+                    <div class="error-message" id="descriptionError"></div>
+                </div>
 
-      <div class="form-group">
-        <label for="longitude">경도</label>
-        <input type="number" id="longitude" name="longitude" step="any" placeholder="126.9780" required />
-      </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="latitude">위도</label>
+                        <div class="location-input">
+                            <input type="number" id="latitude" name="latitude" 
+                                   step="any" placeholder="35.1595" required>
+                            <button type="button" class="location-btn" onclick="getCurrentLocation()" title="현재 위치">
+                                📍
+                            </button>
+                        </div>
+                        <div class="error-message" id="latitudeError"></div>
+                    </div>
 
-      <div class="form-group">
-        <label for="radius">반경 (m)</label>
-        <input type="number" id="radius" name="radius" placeholder="예: 1000" required />
-      </div>
+                    <div class="form-group">
+                        <label for="longitude">경도</label>
+                        <input type="number" id="longitude" name="longitude" 
+                               step="any" placeholder="129.1623" required>
+                        <div class="error-message" id="longitudeError"></div>
+                    </div>
+                </div>
 
-      <div class="form-group">
-        <label for="startDate">시작일</label>
-        <input type="date" id="startDate" name="startDate" required />
-      </div>
+                <div class="form-group">
+                    <label for="radiusMeter">반경 (미터)</label>
+                    <input type="number" id="radiusMeter" name="radiusMeter" 
+                           placeholder="1000" min="100" max="10000" required>
+                    <div class="error-message" id="radiusError"></div>
+                </div>
 
-      <div class="form-group">
-        <label for="endDate">종료일</label>
-        <input type="date" id="endDate" name="endDate" required />
-      </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">시작일</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                        <div class="error-message" id="startDateError"></div>
+                    </div>
 
-      <button type="submit" class="submit-btn">다음 단계로 →</button>
-    </form>
-  </div>
+                    <div class="form-group">
+                        <label for="endDate">종료일</label>
+                        <input type="date" id="endDate" name="endDate" required>
+                        <div class="error-message" id="endDateError"></div>
+                    </div>
+                </div>
 
-  <script src="../js/events.js"></script>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="spinner"></span>
+                    <span class="btn-text">이벤트 등록하기</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- 미리보기 -->
+        <div class="preview-card">
+            <div class="card-title">
+                <div class="card-icon">👁️</div>
+                실시간 미리보기
+            </div>
+            <div class="card-subtitle">입력하신 정보를 확인해보세요</div>
+
+            <div class="preview-content" id="previewContent">
+                <div class="empty-preview">
+                    정보를 입력하면 여기에 미리보기가 표시됩니다
+                </div>
+            </div>
+
+            <div class="map-container" id="mapContainer">
+                위치 정보를 입력하면 지도가 표시됩니다
+            </div>
+        </div>
+    </div>
+    <script src="../js/events.js"></script>
+
 </body>
 </html>
