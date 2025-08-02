@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNEAR ADMIN - 팝업 스토어 생성</title>
+    <link rel="stylesheet" href="../css/events_popup.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()" title="뒤로가기">
+                ←
+            </button>
+            <div class="header-title">
+                <h1>팝업 스토어 생성</h1>
+                <div class="header-subtitle">이벤트 지역 내 팝업 스토어를 등록하세요</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- 팝업 스토어 등록 폼 -->
+        <div class="form-card">
+            <div class="card-title">
+                <div class="card-icon">🏪</div>
+                팝업 스토어 정보 입력
+            </div>
+            <div class="card-subtitle">팝업 스토어의 기본 정보를 입력해주세요</div>
+
+            <form id="popupStoreForm">
+                <div class="form-group">
+                    <label for="storeName">스토어 이름</label>
+                    <input type="text" id="storeName" name="storeName" 
+                           placeholder="예: 유플러스와 함께하는 팝업스토어" required>
+                    <div class="error-message" id="storeNameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">스토어 설명</label>
+                    <textarea id="description" name="description" 
+                              placeholder="팝업 스토어에 대한 자세한 설명을 입력해주세요" required></textarea>
+                    <div class="error-message" id="descriptionError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">카테고리</label>
+                    <select id="category" name="category" required>
+                        <option value="">카테고리 선택</option>
+                        <option value="푸드">푸드</option>
+                        <option value="생활/편의">생활/편의</option>
+                        <option value="뷰티/건강">뷰티/건강</option>
+                        <option value="액티비티">액티비티</option>
+                        <option value="교육">교육</option>
+                        <option value="문화/여가">문화/여가</option>
+                        <option value="베이커리">베이커리</option>
+                        <option value="쇼핑">쇼핑</option>
+                        <option value="카페">카페</option>
+                    </select>
+                    <div class="error-message" id="categoryError"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">시작일</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                        <div class="error-message" id="startDateError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endDate">종료일</label>
+                        <input type="date" id="endDate" name="endDate" required>
+                        <div class="error-message" id="endDateError"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="openTime">오픈 시간</label>
+                        <input type="time" id="openTime" name="openTime" required>
+                        <div class="error-message" id="openTimeError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="closeTime">마감 시간</label>
+                        <input type="time" id="closeTime" name="closeTime" required>
+                        <div class="error-message" id="closeTimeError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="specificAddress">상세 주소</label>
+                    <input type="text" id="specificAddress" name="specificAddress" 
+                           placeholder="예: 서울특별시 용산구 한강대로 32" required>
+                    <div class="error-message" id="specificAddressError"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="latitude">위도</label>
+                        <input type="number" id="latitude" name="latitude" 
+                               step="any" placeholder="35.1595" required>
+                        <div class="error-message" id="latitudeError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="longitude">경도</label>
+                        <input type="number" id="longitude" name="longitude" 
+                               step="any" placeholder="129.1623" required>
+                        <div class="error-message" id="longitudeError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactInfo">연락처 정보</label>
+                    <input type="text" id="contactInfo" name="contactInfo" 
+                           placeholder="전화번호, 이메일 또는 기타 연락처" required>
+                    <div class="error-message" id="contactInfoError"></div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="spinner"></span>
+                    <span class="btn-text">팝업 스토어 등록하기</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- 미리보기 -->
+        <div class="preview-card">
+            <div class="card-title">
+                <div class="card-icon">👁️</div>
+                실시간 미리보기
+            </div>
+            <div class="card-subtitle">입력하신 정보를 확인해보세요</div>
+
+            <div class="preview-content" id="previewContent">
+                <div class="empty-preview">
+                    정보를 입력하면 여기에 미리보기가 표시됩니다
+                </div>
+            </div>
+
+            <div class="location-preview" id="locationPreview">
+                위치 정보가 생성되면 여기에 표시됩니다
+            </div>
+        </div>
+    </div>
+    <script src="../js/events_popup.js"></script>
+</body>
+</html>
