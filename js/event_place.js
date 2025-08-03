@@ -490,8 +490,18 @@ const registerPartners = async () => {
             // 성공 후 처리
             setTimeout(() => {
                 const nextStep = confirm('제휴처 등록이 완료되었습니다.\n\n다른 작업을 계속하시겠습니까?');
-                if (!nextStep) {
-                    goBack();
+                if (nextStep) {
+                    // 이벤트 쿠폰 페이지로 리다이렉션
+                    const eventId = eventData.eventId;
+                    if (eventId) {
+                        window.location.href = `./event_coupon.html?eventId=${eventId}`;
+                    } else {
+                        console.error('eventData.eventId가 없습니다:', eventData);
+                        alert('이벤트 ID 오류가 발생했습니다.');
+                        goBack();
+                    }
+                } else {
+                    goBack(); // 이벤트 목록으로
                 }
             }, 2000);
             

@@ -477,17 +477,25 @@ const showSuccessModal = () => {
     alert('팝업 스토어가 성공적으로 등록되었습니다!');
     
     setTimeout(() => {
-        const nextStep = confirm('계속해서 다른 작업을 하시겠습니까?\n\n아니오를 선택하면 이벤트 목록으로 돌아갑니다.');
-        if (!nextStep) {
-            goBack();
+        const nextStep = confirm(
+            '팝업 스토어 등록이 완료되었습니다!\n\n' +
+            '다음 단계로 이벤트 제휴처를 등록하시겠습니까?\n\n' +
+            '- 예: 이벤트 제휴처 등록 페이지로 이동\n' +
+            '- 아니오: 이벤트 목록으로 돌아가기'
+        );
+        
+        if (nextStep) {
+            // 이벤트 제휴처 페이지로 리다이렉션
+            const eventId = eventLocationData.eventId;
+            if (eventId) {
+                window.location.href = `./event_place.html?eventId=${eventId}`;
+            } else {
+                console.error('eventLocationData.eventId가 없습니다:', eventLocationData);
+                alert('이벤트 ID 오류가 발생했습니다.');
+                goBack();
+            }
         } else {
-            // 폼 초기화
-            document.getElementById('popupStoreForm').reset();
-            // 미리보기 초기화
-            updatePreview();
-            updateLocationPreview();
-            // 기본값 재설정
-            initializeDefaultValues();
+            goBack(); // 이벤트 목록으로
         }
     }, 1000);
 };

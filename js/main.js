@@ -84,7 +84,7 @@ const navigateTo = (page) => {
         dashboard: './dashboard.html',
         events: './events.html',
         coupons: './coupons.html',
-        partners: './partners.html',
+        partners: './place.html',
         settings: './settings.html',
     };
 

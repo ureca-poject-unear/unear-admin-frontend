@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제휴처 관리 시스템</title>
+    <link rel="stylesheet" href="../css/place.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">🤝</div>
+            <div class="header-title">
+                <h1>제휴처 관리 시스템</h1>
+                <div class="header-subtitle">제휴처를 효율적으로 관리하세요</div>
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">관</div>
+            <span>관리자</span>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="controls-section">
+            <div class="controls-header">
+                <div class="controls-title">
+                    📊 제휴처 목록
+                </div>
+                <button class="add-btn" onclick="openModal('add')">
+                    ➕ 새 제휴처 추가
+                </button>
+            </div>
+            
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label>업체명 검색</label>
+                    <input type="text" id="searchName" placeholder="업체명을 입력하세요" oninput="filterPlaces()">
+                </div>
+                <button class="refresh-btn" onclick="loadPlaces()">🔄</button>
+            </div>
+        </div>
+
+        <div id="placesContainer" class="partnerships-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>제휴처 목록을 불러오는 중...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="placeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title">새 제휴처 추가</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="placeForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>업체명 *</label>
+                        <input type="text" id="placeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>전화번호 *</label>
+                        <input type="tel" id="tel" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>주소 *</label>
+                    <input type="text" id="address" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>위도</label>
+                        <input type="number" id="latitude" step="0.0000001" placeholder="예: 37.5665">
+                    </div>
+                    <div class="form-group">
+                        <label>경도</label>
+                        <input type="number" id="longitude" step="0.0000001" placeholder="예: 126.9780">
+                    </div>
+                </div>
+            </form>
+            
+            <div class="modal-actions">
+                <button class="modal-btn btn-secondary" onclick="closeModal()">취소</button>
+                <button class="modal-btn btn-primary" onclick="savePlace()">저장</button>
+            </div>
+        </div>
+    </div>
+    <script src="../js/place.js"></script>
+</body>
+</html>
