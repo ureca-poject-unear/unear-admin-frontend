@@ -83,7 +83,7 @@ const navigateTo = (page) => {
     const routes = {
         dashboard: './dashboard.html',
         events: './events.html',
-        coupons: './coupons.html',
+        coupons: './coupon.html',
         partners: './place.html',
         settings: './settings.html',
     };
