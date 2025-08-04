@@ -219,15 +219,19 @@
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
                 scales: {
-                    y: { beginAtZero: true }
+                    x: {
+                        ticks: {
+                            maxRotation: 0,
+                            minRotation: 0,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
                 }
             }
+
         });
     }
 
