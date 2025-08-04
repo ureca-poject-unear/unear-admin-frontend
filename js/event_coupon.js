@@ -1,11 +1,11 @@
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:8082',
+    BASE_URL: 'https://dev.unear.site/api/admin',
     ENDPOINTS: {
-        EVENT_INFO: '/admin/events',
-        COUPON_CREATE: '/admin/events', // /{eventId}/coupon
-        DISCOUNT_POLICIES: '/admin/discount-policies',
-        MEMBERSHIPS: '/admin/memberships',
-        EVENT_PLACES: '/admin/events' // /{eventId}/places - 팝업스토어 목록 조회
+        EVENT_INFO: '/events',
+        COUPON_CREATE: '/events', // /{eventId}/coupon
+        DISCOUNT_POLICIES: '/discount-policies',
+        MEMBERSHIPS: '/memberships',
+        EVENT_PLACES: '/events' // /{eventId}/places - 팝업스토어 목록 조회
     }
 };
 

@@ -1,9 +1,9 @@
 // API 설정
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:8082',
+    BASE_URL: 'https://dev.unear.site/api/admin',
     ENDPOINTS: {
-        POPUP_STORE: '/admin/events', // 팝업스토어 등록 기본 경로 (/{eventId}/places/popup이 추가됨)
-        EVENT_INFO: '/admin/events' // 이벤트 정보 조회용
+        POPUP_STORE: '/events', // 팝업스토어 등록 기본 경로 (/{eventId}/places/popup이 추가됨)
+        EVENT_INFO: '/events' // 이벤트 정보 조회용
     }
 };
 

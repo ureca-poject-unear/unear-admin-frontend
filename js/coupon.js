@@ -1,4 +1,4 @@
-        // 전역 변수
+// 전역 변수
         let coupons = [];
         let filteredCoupons = [];
         let currentEditId = null;
@@ -8,24 +8,23 @@
             loadCoupons();
         });
 
-        // API Base URL (실제 환경에서는 설정 파일에서 관리)
-        const API_BASE_URL = '/admin/coupons';
+        // API Base URL (실제 배포 환경)
+        const API_BASE_URL = 'https://dev.unear.site/api/admin';
+        const COUPON_ENDPOINT = '/coupons'; // admin을 제거한 엔드포인트
 
         // 쿠폰 목록 로드
         async function loadCoupons() {
             try {
                 showLoading();
 
-                // 실제 API 호출 코드 (주석 처리)
-                
-                const response = await fetch(API_BASE_URL);
+                // 실제 API 호출
+                const response = await fetch(`${API_BASE_URL}${COUPON_ENDPOINT}`);
                 if (!response.ok) {
                     throw new Error('쿠폰 목록을 불러오는데 실패했습니다.');
                 }
                 const data = await response.json();
                 
-                
-                coupons = sampleData;
+                coupons = data;
                 filteredCoupons = [...coupons];
                 renderCoupons();
                 
@@ -230,9 +229,8 @@
                     return;
                 }
 
-                // 실제 API 호출 (주석 처리)
-                /*
-                const url = currentEditId ? `${API_BASE_URL}/${currentEditId}` : API_BASE_URL;
+                // 실제 API 호출
+                const url = currentEditId ? `${API_BASE_URL}${COUPON_ENDPOINT}/${currentEditId}` : `${API_BASE_URL}${COUPON_ENDPOINT}`;
                 const method = currentEditId ? 'PUT' : 'POST';
                 
                 const response = await fetch(url, {
@@ -246,30 +244,9 @@
                 if (!response.ok) {
                     throw new Error('쿠폰 저장에 실패했습니다.');
                 }
-                */
-
-                // 샘플 데이터 업데이트
-                if (currentEditId) {
-                    const index = coupons.findIndex(c => c.couponId === currentEditId);
-                    if (index !== -1) {
-                        coupons[index] = {
-                            ...coupons[index],
-                            ...formData,
-                            discountPolicyLabel: getPolicyLabel(formData.discountCode)
-                        };
-                    }
-                } else {
-                    const newCoupon = {
-                        couponId: Math.max(...coupons.map(c => c.couponId)) + 1,
-                        ...formData,
-                        discountPolicy: formData.discountCode,
-                        discountPolicyLabel: getPolicyLabel(formData.discountCode)
-                    };
-                    coupons.unshift(newCoupon);
-                }
 
                 closeModal();
-                filterCoupons(); // 필터링된 목록 다시 렌더링
+                await loadCoupons(); // 전체 목록 다시 로드
                 alert(currentEditId ? '쿠폰이 수정되었습니다.' : '쿠폰이 추가되었습니다.');
 
             } catch (error) {
@@ -308,24 +285,16 @@
             }
 
             try {
-                // 실제 API 호출 (주석 처리)
-                /*
-                const response = await fetch(`${API_BASE_URL}/${couponId}`, {
+                // 실제 API 호출
+                const response = await fetch(`${API_BASE_URL}${COUPON_ENDPOINT}/${couponId}`, {
                     method: 'DELETE'
                 });
 
                 if (!response.ok) {
                     throw new Error('쿠폰 삭제에 실패했습니다.');
                 }
-                */
 
-                // 샘플 데이터에서 제거
-                const index = coupons.findIndex(c => c.couponId === couponId);
-                if (index !== -1) {
-                    coupons.splice(index, 1);
-                }
-
-                filterCoupons(); // 필터링된 목록 다시 렌더링
+                await loadCoupons(); // 전체 목록 다시 로드
                 alert('쿠폰이 삭제되었습니다.');
 
             } catch (error) {

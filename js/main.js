@@ -1,24 +1,24 @@
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:8082',
+    BASE_URL: 'https://dev.unear.site/api/admin',
     ENDPOINTS: {
         LOGIN: '/auth/login',
         LOGOUT: '/auth/logout',
         ADMIN_COUPONS: {
-            BASE: '/admin/coupons',
-            DETAIL: (id) => `/admin/coupons/${id}`,
+            BASE: '/coupons',
+            DETAIL: (id) => `/coupons/${id}`,
         },
         ADMIN_EVENTS: {
-            BASE: '/admin/events',
-            POPUP: (eventId) => `/admin/events/${eventId}/places/popup`,
-            NEARBY_PARTNERS: (eventId) => `/admin/events/${eventId}/partners/nearby`,
-            REGISTER_PARTNERS: (eventId) => `/admin/events/${eventId}/partners`,
-            COUPON: (eventId) => `/admin/events/${eventId}/coupon`,
+            BASE: '/events',
+            POPUP: (eventId) => `/events/${eventId}/places/popup`,
+            NEARBY_PARTNERS: (eventId) => `/events/${eventId}/partners/nearby`,
+            REGISTER_PARTNERS: (eventId) => `/events/${eventId}/partners`,
+            COUPON: (eventId) => `/events/${eventId}/coupon`,
         },
         ADMIN_PLACES: {
-            BASE: '/admin/places',
-            UPDATE: (placeId) => `/admin/places/${placeId}`,
-            DELETE: '/admin/places',
-            EVENT_RADIUS: (eventId) => `/admin/places/${eventId}/partners`,
+            BASE: '/places',
+            UPDATE: (placeId) => `/places/${placeId}`,
+            DELETE: '/places',
+            EVENT_RADIUS: (eventId) => `/places/${eventId}/partners`,
         },
     },
 };

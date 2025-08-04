@@ -1,8 +1,8 @@
- const API_GET_URL = 'http://localhost:8082/admin/places';
-        const API_POST_URL = 'http://localhost:8080/admin/events';
-        const API_PUT_URL = 'http://localhost:8082/admin/places';
-        const API_DELETE_URL = 'http://localhost:8082/admin/places';
-        
+ const API_GET_URL = 'https://dev.unear.site/api/admin/places';
+        const API_POST_URL = 'https://dev.unear.site/api/admin/events';
+        const API_PUT_URL = 'https://dev.unear.site/api/admin/places';
+        const API_DELETE_URL = 'https://dev.unear.site/api/admin/places';
+
         // 전역 변수
         let places = [];
         let filteredPlaces = [];
