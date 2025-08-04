@@ -1,8 +1,8 @@
 // API 설정
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:8082',
+    BASE_URL: 'https://dev.unear.site/api/admin',
     ENDPOINTS: {
-        EVENTS: '/admin/events'
+        EVENTS: '/events'
     }
 };
 

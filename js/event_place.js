@@ -1,9 +1,9 @@
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:8082',
+    BASE_URL: 'https://dev.unear.site/api/admin',
     ENDPOINTS: {
-        EVENT_INFO: '/admin/events',
-        PARTNERS_SEARCH: '/admin/events/2/partners/nearby', // 반경 내 제휴처 검색
-        EVENT_PARTNERS: '/admin/events' // 이벤트 제휴처 등록 (/{eventId}/partners)
+        EVENT_INFO: '/events',
+        PARTNERS_SEARCH: '/events/2/partners/nearby', // 반경 내 제휴처 검색
+        EVENT_PARTNERS: '/events' // 이벤트 제휴처 등록 (/{eventId}/partners)
     }
 };
 
