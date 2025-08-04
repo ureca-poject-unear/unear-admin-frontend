@@ -236,10 +236,10 @@
             data: { labels, datasets: [{ label: '방문 수', data: counts, backgroundColor: 'rgba(255,99,132,0.6)' }] },
             options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
         });
-        document.getElementById('eventTable').innerHTML = sorted.map((d, i) => `<tr><td>${i + 1}</td><td>${d.keyword}</td><td>${d.count}</td><td>${d.distinctUserCount}</td></tr>`).join('');
 
         const res2 = await fetch(`${BASE_URL}/admin/admin/summary/event-stats?${params}`);
         const data2 = await res2.json();
+        console.log('✅ 이벤트 통계 데이터:', data2);  // ← 디버깅용
         const group = data2[0];
         const totalJoin = group.joinCount || 0;
         const totalDone = group.doneCount || 0;
