@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/main.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         .main-grid {
             display: flex;
@@ -17,14 +18,16 @@
         .dashboard-card {
             flex: 1 1 calc(33% - 20px);
             min-width: 320px;
-            max-height: 700px;
+            min-height: 550px;
             padding: 20px;
             border-radius: 16px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
             background-color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+        }
+
+        .chart-wrapper {
+            height: 350px;
+            margin-bottom: 20px;
         }
 
         @media (max-width: 1200px) {
@@ -54,7 +57,6 @@
         </div>
     </div>
 
-    <!-- 필터 -->
     <form id="filter-form" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px;">
         <label>연령대:
             <select id="ageGroup">
@@ -81,14 +83,19 @@
         <button type="submit" class="card-action" style="height: fit-content;">조회</button>
     </form>
 
-    <!-- 대시보드 카드 -->
     <div class="main-grid">
         <!-- 인기 검색어 -->
         <div class="card dashboard-card">
             <div class="card-icon">🔍</div>
             <div class="card-title">인기 검색어</div>
             <div class="card-description">최근 인기 키워드를 확인하세요</div>
-            <canvas id="chartKeyword" height="300"></canvas>
+            <div class="chart-wrapper">
+                <canvas id="chartKeyword"></canvas>
+            </div>
+            <table>
+                <thead><tr><th>항목</th><th>카운트</th><th>유니크 유저 수</th></tr></thead>
+                <tbody id="tableKeyword"></tbody>
+            </table>
         </div>
 
         <!-- 관심 카테고리 -->
@@ -96,7 +103,13 @@
             <div class="card-icon">📂</div>
             <div class="card-title">관심 카테고리</div>
             <div class="card-description">사용자의 관심 카테고리를 분석합니다</div>
-            <canvas id="chartCategory" height="300"></canvas>
+            <div class="chart-wrapper">
+                <canvas id="chartCategory"></canvas>
+            </div>
+            <table>
+                <thead><tr><th>항목</th><th>카운트</th><th>유니크 유저 수</th></tr></thead>
+                <tbody id="tableCategory"></tbody>
+            </table>
         </div>
 
         <!-- 시간대별 활성도 -->
@@ -104,7 +117,13 @@
             <div class="card-icon">⏰</div>
             <div class="card-title">시간대별 활성도</div>
             <div class="card-description">어느 시간대에 활동이 가장 많은지 확인하세요</div>
-            <canvas id="chartActivate" height="300"></canvas>
+            <div class="chart-wrapper">
+                <canvas id="chartActivate"></canvas>
+            </div>
+            <table>
+                <thead><tr><th>시간</th><th>카운트</th><th>유니크 유저 수</th></tr></thead>
+                <tbody id="tableActivate"></tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -138,9 +157,7 @@
                 const res = await fetch(`${BASE_URL}/admin/admin/summary?${params.toString()}`, {
                     method: 'GET',
                     credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Content-Type': 'application/json' }
                 });
 
                 if (!res.ok) {
@@ -151,7 +168,7 @@
                 }
 
                 const result = await res.json();
-                renderChartOnly(type, result, `chart${capitalize(type)}`, type === 'activate' ? 'line' : 'bar');
+                renderSummary(type, result, `chart${capitalize(type)}`, `table${capitalize(type)}`, type === 'activate' ? 'line' : 'bar');
             } catch (err) {
                 console.error(`🚨 요청 중 예외 발생 [${type}]:`, err);
                 alert(`데이터 요청 오류 (${type})`);
@@ -159,7 +176,7 @@
         }
     });
 
-    function renderChartOnly(type, data, canvasId, chartType) {
+    function renderSummary(type, data, canvasId, tableId, chartType) {
         let labels, counts;
 
         if (type === 'activate') {
@@ -167,6 +184,7 @@
                 .sort((a, b) => a.hour - b.hour);
             labels = sorted.map(d => `${d.hour}시`);
             counts = sorted.map(d => d.count);
+            data = sorted;
         } else {
             labels = data.map(d => d.keyword);
             counts = data.map(d => d.count);
@@ -191,6 +209,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false }
                 },
@@ -199,6 +218,15 @@
                 }
             }
         });
+
+        const tbody = document.getElementById(tableId);
+        tbody.innerHTML = data.map(d => `
+            <tr>
+                <td>${type === 'activate' ? `${d.keyword}시` : d.keyword}</td>
+                <td>${d.count}</td>
+                <td>${d.distinctUserCount}</td>
+            </tr>
+        `).join('');
     }
 
     function capitalize(str) {
