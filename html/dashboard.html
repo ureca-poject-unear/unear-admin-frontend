@@ -97,7 +97,7 @@
 </div>
 
 <script>
-    const BASE_URL = "https://dev.unear.site/api/admin"
+    const BASE_URL = "https://dev.unear.site/api/admin";
     const form = document.getElementById('filter-form');
     const chartInstances = {};
 
@@ -112,12 +112,32 @@
         if (gender) params.append('gender', gender);
         if (yearMonth) params.append('yearMonth', yearMonth);
 
-        const res = await fetch(`${BASE_URL}/summary?${params.toString()}`);
-        const result = await res.json();
+        try {
+            const res = await fetch(`${BASE_URL}/summary?${params.toString()}`, {
+                method: 'GET',
+                credentials: 'include', // 세션 쿠키 포함
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        renderSummary('keyword', result.keyword, 'chartKeyword', 'tableKeyword', 'bar');
-        renderSummary('category', result.category, 'chartCategory', 'tableCategory', 'bar');
-        renderSummary('activate', result.activate, 'chartActivate', 'tableActivate', 'line');
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error('API 요청 실패:', res.status, errorText);
+                alert(`요청 실패: ${res.status} - 관리자 로그인 상태를 확인해주세요.`);
+                return;
+            }
+
+            const result = await res.json();
+
+            renderSummary('keyword', result.keyword, 'chartKeyword', 'tableKeyword', 'bar');
+            renderSummary('category', result.category, 'chartCategory', 'tableCategory', 'bar');
+            renderSummary('activate', result.activate, 'chartActivate', 'tableActivate', 'line');
+
+        } catch (err) {
+            console.error('요청 중 예외 발생:', err);
+            alert('데이터 요청 중 오류가 발생했습니다.');
+        }
     });
 
     function renderSummary(type, data, canvasId, tableId, chartType) {
@@ -134,7 +154,6 @@
             counts = data.map(d => d.count);
         }
 
-        // Chart.js 인스턴스 초기화
         const ctx = document.getElementById(canvasId).getContext('2d');
         if (chartInstances[canvasId]) {
             chartInstances[canvasId].destroy();
@@ -163,20 +182,20 @@
             }
         });
 
-        // 표 렌더링
         const tbody = document.getElementById(tableId);
         tbody.innerHTML = data.map(d => `
-        <tr>
-          <td>${type === 'activate' ? `${d.keyword}시` : d.keyword}</td>
-          <td>${d.count}</td>
-          <td>${d.distinctUserCount}</td>
-        </tr>
-      `).join('');
+            <tr>
+                <td>${type === 'activate' ? `${d.keyword}시` : d.keyword}</td>
+                <td>${d.count}</td>
+                <td>${d.distinctUserCount}</td>
+            </tr>
+        `).join('');
     }
 
     function handleLogout() {
         alert('로그아웃 처리 예정');
     }
 </script>
+
 </body>
 </html>
