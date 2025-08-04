@@ -7,10 +7,22 @@
     <link rel="stylesheet" href="../css/main.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        .header-dashboard {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.6s ease-out;
+        }
         .main-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 24px;
             justify-content: space-between;
         }
         .main-grid.three-column .dashboard-card {
@@ -48,15 +60,15 @@
             align-items: flex-end;  /* ✅ 버튼 하단 정렬로 맞춤 */
         }
 
-
         /* 통합 wrapper */
         .filter-wrapper {
             display: flex;
             justify-content: center;
-            align-items: flex-end;  /* ✅ 여기 핵심: 하단 정렬로 통일 */
+            align-items: flex-end;
             gap: 32px;
             flex-wrap: wrap;
-            margin: 24px 0;
+            padding-bottom: 24px;  /* ✅ 하단 패딩만 적용 */
+            margin: 0;             /* 위아래 margin 제거 (선택 사항) */
         }
 
         /* 버튼 높이 통일 */
@@ -107,14 +119,16 @@
         .submit-button:hover {
             background-color: #7e9dfc; /* 연한 블루톤 */
         }
-        body { overflow-x: hidden; }
+        body {
+            padding-top: 5px; /* 기존보다 작게 */
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="header-left"><h1>UNEAR ADMIN</h1><div class="welcome-message">환영합니다, 관리자님!</div></div>
-        <div class="header-right"><div class="user-info"><div class="user-avatar">관</div><span>관리자</span></div>
+    <div class="header-dashboard">
+        <div class="header-left"><h1>UNEAR ADMIN</h1><div class="welcome-message">환영합니다, 관리자1님!</div></div>
+        <div class="header-right"><div class="user-info"><div class="user-avatar">관</div><span>관리자1</span></div>
             <button class="logout-btn" onclick="handleLogout()">로그아웃</button></div>
     </div>
 
