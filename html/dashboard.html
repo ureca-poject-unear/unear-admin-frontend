@@ -224,7 +224,7 @@
         if (ageGroup) params.append('ageGroup', ageGroup);
         if (gender) params.append('gender', gender);
 
-        const res1 = await fetch(`${BASE_URL}/admin/summary/event-place?yearMonth=${yearMonth}`);
+        const res1 = await fetch(`${BASE_URL}/admin/admin/summary/event-place?yearMonth=${yearMonth}`);
         const data1 = await res1.json();
         const sorted = data1.sort((a, b) => b.count - a.count);
         const labels = sorted.map(d => d.keyword);
@@ -238,7 +238,7 @@
         });
         document.getElementById('eventTable').innerHTML = sorted.map((d, i) => `<tr><td>${i + 1}</td><td>${d.keyword}</td><td>${d.count}</td><td>${d.distinctUserCount}</td></tr>`).join('');
 
-        const res2 = await fetch(`${BASE_URL}/admin/summary/event-stats?${params}`);
+        const res2 = await fetch(`${BASE_URL}/admin/admin/summary/event-stats?${params}`);
         const data2 = await res2.json();
         const totalJoin = data2.reduce((a, b) => a + (b.joinCount || 0), 0);
         const totalDone = data2.reduce((a, b) => a + (b.doneCount || 0), 0);
