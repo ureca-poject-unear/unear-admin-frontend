@@ -26,19 +26,31 @@
             flex: 1 1 calc(33.333% - 24px);
             min-width: 300px;
             max-width: calc(33.333% - 24px);
-            box-sizing: border-box;
-            padding: 24px;
+            padding: 16px; /* 기존: 24px → 줄임 */
             border-radius: 16px;
             background-color: white;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            height: 460px;  /* 🔥 전체 카드 높이 조정 */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
+        /* 상단 텍스트 영역 여백 줄이기 */
+        .card-title {
+            font-size: 20px;  /* 기존보다 작게 */
+            margin-bottom: 4px;
+        }
+        .card-description {
+            font-size: 13px;  /* 기존보다 작게 */
+            margin-bottom: 8px;
+        }
 
-
+        /* 그래프 wrapper 높이 조정 */
         .chart-wrapper {
-            height: 450px;
-            margin-top: 20px;
+            height: 320px;  /* 기존보다 살짝 줄임 */
         }
+
 
         @media (max-width: 1024px) {
             .dashboard-card {
