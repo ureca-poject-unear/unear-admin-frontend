@@ -33,7 +33,7 @@
         }
         .card-title { font-size: 20px; margin-bottom: 4px; }
         .card-description { font-size: 13px; margin-bottom: 8px; }
-        .chart-wrapper { height: 500px; }
+        .chart-wrapper { height: 600px; }
         .filter-form, .dashboard-toggle {
             display: flex;
             flex-wrap: wrap;
@@ -106,17 +106,14 @@
     <div id="summary-section" class="main-grid three-column">
         <div class="card dashboard-card">
             <div class="card-title">인기 검색어</div>
-            <div class="card-description">최근 인기 키워드를 확인하세요</div>
             <div class="chart-wrapper"><canvas id="chartKeyword"></canvas></div>
         </div>
         <div class="card dashboard-card">
             <div class="card-title">관심 카테고리</div>
-            <div class="card-description">사용자의 관심 카테고리를 분석합니다</div>
             <div class="chart-wrapper"><canvas id="chartCategory"></canvas></div>
         </div>
         <div class="card dashboard-card">
             <div class="card-title">시간대별 활성도</div>
-            <div class="card-description">활동 시간대를 확인하세요</div>
             <div class="chart-wrapper"><canvas id="chartActivate"></canvas></div>
         </div>
     </div>
@@ -192,6 +189,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: { x: { ticks: { autoSkip: false } }, y: { beginAtZero: true } }
             }
         });
@@ -234,7 +232,7 @@
         chartInstances['eventChart'] = new Chart(ctx1, {
             type: 'bar',
             data: { labels, datasets: [{ label: '방문 수', data: counts, backgroundColor: 'rgba(255,99,132,0.6)' }] },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
         });
 
         const res2 = await fetch(`${BASE_URL}/admin/admin/summary/event-stats?${params}`);
@@ -263,6 +261,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
