@@ -240,37 +240,53 @@
 
         const res2 = await fetch(`${BASE_URL}/admin/admin/summary/event-stats?${params}`);
         const data2 = await res2.json();
-        const totalJoin = data2.reduce((a, b) => a + (b.joinCount || 0), 0);
-        const totalDone = data2.reduce((a, b) => a + (b.doneCount || 0), 0);
-        const totalDrop = data2.reduce((a, b) => a + (b.dropCount || 0), 0);
-        const doneRate = totalJoin ? (totalDone / totalJoin * 100).toFixed(1) : '0.0';
-        const dropRate = totalJoin ? (totalDrop / totalJoin * 100).toFixed(1) : '0.0';
+        const group = data2[0];
+        const totalJoin = group.joinCount || 0;
+        const totalDone = group.doneCount || 0;
+        const totalDrop = group.dropCount || 0;
+        const doneRate = +(group.completionRate * 100).toFixed(1); // ← 소수점 퍼센트
+        const dropRate = +(group.dropRate * 100).toFixed(1);
+
+
         const ctx2 = document.getElementById('completionChart').getContext('2d');
         if (chartInstances['completionChart']) chartInstances['completionChart'].destroy();
+
         chartInstances['completionChart'] = new Chart(ctx2, {
             type: 'bar',
             data: {
                 labels: ["참여자 수", "완료자 수", "이탈자 수", "완료율 (%)", "이탈율 (%)"],
                 datasets: [{
                     label: '이벤트 통계',
-                    data: [totalJoin, totalDone, totalDrop, doneRate, dropRate],
+                    data: [totalJoin, totalDone, totalDrop, doneRate, dropRate], // ✅ 숫자만
                     backgroundColor: ['#36A2EB', '#4BC0C0', '#FF6384', '#9966FF', '#FF9F40']
                 }]
             },
             options: {
                 responsive: true,
-                scales: { y: { beginAtZero: true } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 100, // 비율 대비 y축 예쁘게
+                        ticks: {
+                            callback: value => value + '%'
+                        }
+                    }
+                },
                 plugins: { legend: { display: false } }
             }
         });
-        document.getElementById('statsTableBody').innerHTML = data2.map(d => {
-            const join = d.joinCount || 0;
-            const done = d.doneCount || 0;
-            const drop = d.dropCount || 0;
-            const dr = join ? ((done / join) * 100).toFixed(1) : '0.0';
-            const er = join ? ((drop / join) * 100).toFixed(1) : '0.0';
-            return `<tr><td>${d.group || '전체'}</td><td>${join}</td><td>${done}</td><td>${drop}</td><td>${dr}%</td><td>${er}%</td></tr>`;
-        }).join('');
+
+        document.getElementById('statsTableBody').innerHTML = data2.map(d => `
+        <tr>
+            <td>${d.group || '전체'}</td>
+            <td>${d.joinCount}</td>
+            <td>${d.doneCount}</td>
+            <td>${d.dropCount}</td>
+            <td>${(d.completionRate * 100).toFixed(1)}%</td>
+            <td>${(d.dropRate * 100).toFixed(1)}%</td>
+        </tr>
+    `).join('');
+
     }
     function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
     function handleLogout() { alert('로그아웃 처리 예정'); }
