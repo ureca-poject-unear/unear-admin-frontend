@@ -97,7 +97,7 @@
 </div>
 
 <script>
-    const BASE_URL = "https://dev.unear.site/api/admin";
+    const BASE_URL = "https://dev.unear.site";
     const form = document.getElementById('filter-form');
     const chartInstances = {};
 
@@ -113,7 +113,7 @@
         if (yearMonth) params.append('yearMonth', yearMonth);
 
         try {
-            const res = await fetch(`${BASE_URL}/summary?${params.toString()}`, {
+            const res = await fetch(`${BASE_URL}/api/admin/summary?${params.toString()}`, {
                 method: 'GET',
                 credentials: 'include', // 세션 쿠키 포함
                 headers: {
