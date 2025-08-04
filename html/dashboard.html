@@ -183,16 +183,23 @@
         let labels, counts;
 
         if (type === 'activate') {
-            const sorted = data.map(d => ({ ...d, hour: parseInt(d.keyword) }))
-                .sort((a, b) => a.hour - b.hour);
+            const sorted = data
+                .map(d => ({ ...d, hour: parseInt(d.keyword) }))
+                .sort((a, b) => a.hour - b.hour)
+                .slice(0, 10); // 상위 10시간만 (선택적)
             labels = sorted.map(d => `${d.hour}시`);
             counts = sorted.map(d => d.count);
         } else {
-            labels = data.map(d => d.keyword);
-            counts = data.map(d => d.count);
+            const top10 = data
+                .sort((a, b) => b.count - a.count)  // count 기준 내림차순 정렬
+                .slice(0, 10);                      // 상위 10개만 추출
+            labels = top10.map(d => d.keyword);
+            counts = top10.map(d => d.count);
         }
-        document.getElementById(canvasId).style.height = '300px';
+
         const ctx = document.getElementById(canvasId).getContext('2d');
+
+        // 기존 차트 파괴
         if (chartInstances[canvasId]) {
             chartInstances[canvasId].destroy();
         }
@@ -218,18 +225,28 @@
                 scales: {
                     x: {
                         ticks: {
+                            autoSkip: false,
                             maxRotation: 0,
                             minRotation: 0,
-                            font: { size: 12 },
-                            autoSkip: true,
-                            maxTicksLimit: 8
+                            font: { size: 12 }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            font: { size: 13 }
                         }
                     }
                 }
             }
-
         });
     }
+
 
     function capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
