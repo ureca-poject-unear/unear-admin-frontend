@@ -199,6 +199,16 @@
     const form = document.getElementById('filter-form');
     const chartInstances = {};
 
+    window.addEventListener('DOMContentLoaded', () => {
+        const yearMonthInput = document.getElementById('yearMonth');
+        const today = new Date();
+        const thisMonth = today.toISOString().slice(0, 7); // YYYY-MM
+        yearMonthInput.value = thisMonth;
+
+        // 자동 조회 실행
+        form.dispatchEvent(new Event('submit'));
+    });
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const ageGroup = document.getElementById('ageGroup').value;
