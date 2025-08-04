@@ -183,10 +183,11 @@
         let labels, counts;
 
         if (type === 'activate') {
-            // ✅ 전체 24시간 다 보여주기 (정렬만 하고 slice 제거)
             const sorted = data
                 .map(d => ({ ...d, hour: parseInt(d.keyword) }))
+                .filter(d => d.hour >= 6 && d.hour <= 23) // ✅ 6시~23시만 필터링
                 .sort((a, b) => a.hour - b.hour);
+
             labels = sorted.map(d => `${d.hour}시`);
             counts = sorted.map(d => d.count);
         } else {
