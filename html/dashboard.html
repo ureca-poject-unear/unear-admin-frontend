@@ -107,16 +107,22 @@
         const gender = document.getElementById('gender').value;
         const yearMonth = document.getElementById('yearMonth').value;
 
-        const params = new URLSearchParams();
-        if (ageGroup) params.append('ageGroup', ageGroup);
-        if (gender) params.append('gender', gender);
-        if (yearMonth) params.append('yearMonth', yearMonth);
+        if (!yearMonth) {
+            alert("월을 선택해주세요.");
+            return;
+        }
 
         const types = ['keyword', 'category', 'activate'];
 
         for (const type of types) {
+            const params = new URLSearchParams();
+            params.append('type', type);
+            params.append('yearMonth', yearMonth);
+            if (ageGroup) params.append('ageGroup', ageGroup);
+            if (gender) params.append('gender', gender);
+
             try {
-                const res = await fetch(`${BASE_URL}/api/admin/summary?${params.toString()}&type=${type}`, {
+                const res = await fetch(`${BASE_URL}/api/admin/summary?${params.toString()}`, {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
@@ -126,16 +132,16 @@
 
                 if (!res.ok) {
                     const errorText = await res.text();
-                    console.error(`API 요청 실패 [${type}]:`, res.status, errorText);
-                    alert(`요청 실패 (${type}): ${res.status}`);
+                    console.error(`❌ API 요청 실패 [${type}]:`, res.status, errorText);
+                    alert(`요약 데이터 조회 실패 (${type}): ${res.status}`);
                     continue;
                 }
 
                 const result = await res.json();
                 renderSummary(type, result, `chart${capitalize(type)}`, `table${capitalize(type)}`, type === 'activate' ? 'line' : 'bar');
             } catch (err) {
-                console.error(`요청 중 예외 발생 [${type}]:`, err);
-                alert(`데이터 요청 중 오류 발생 (${type})`);
+                console.error(`🚨 요청 중 예외 발생 [${type}]:`, err);
+                alert(`데이터 요청 오류 (${type})`);
             }
         }
     });
