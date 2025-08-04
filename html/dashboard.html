@@ -53,6 +53,62 @@
             }
         }
 
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 120px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group select,
+        .form-group input[type="month"] {
+            padding: 8px 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            min-width: 120px;
+        }
+
+        .submit-button {
+            padding: 9px 16px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .submit-button:hover {
+            background-color: #5a67d8;
+        }
+
+        @media (max-width: 600px) {
+            .filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .form-group {
+                width: 100%;
+            }
+        }
+
 
         body {
             overflow-x: hidden;
@@ -69,14 +125,15 @@
         <div class="header-right">
             <div class="user-info">
                 <div class="user-avatar">관</div>
-                <span>관리자1</span>
+                <span>관리자</span>
             </div>
             <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
         </div>
     </div>
 
-    <form id="filter-form" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px;">
-        <label>연령대:
+    <form id="filter-form" class="filter-form">
+        <div class="form-group">
+            <label for="ageGroup">연령대</label>
             <select id="ageGroup">
                 <option value="">전체</option>
                 <option value="10s">10대</option>
@@ -84,22 +141,28 @@
                 <option value="30s">30대</option>
                 <option value="40s">40대</option>
             </select>
-        </label>
+        </div>
 
-        <label>성별:
+        <div class="form-group">
+            <label for="gender">성별</label>
             <select id="gender">
                 <option value="">전체</option>
                 <option value="M">남성</option>
                 <option value="F">여성</option>
             </select>
-        </label>
+        </div>
 
-        <label>월 선택:
+        <div class="form-group">
+            <label for="yearMonth">월 선택</label>
             <input type="month" id="yearMonth" required />
-        </label>
+        </div>
 
-        <button type="submit" class="card-action" style="height: fit-content;">조회</button>
+        <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="submit-button">조회</button>
+        </div>
     </form>
+
 
     <div class="main-grid">
         <!-- 인기 검색어 -->
@@ -185,13 +248,12 @@
         if (type === 'activate') {
             const sorted = data
                 .map(d => ({ ...d, hour: parseInt(d.keyword) }))
-                .filter(d => d.hour >= 6 && d.hour <= 23) // ✅ 6시~23시만 필터링
+                .filter(d => d.hour >= 6 && d.hour <= 23)
                 .sort((a, b) => a.hour - b.hour);
 
             labels = sorted.map(d => `${d.hour}시`);
             counts = sorted.map(d => d.count);
         } else {
-            // ✅ 상위 10개만 보여주기
             const top10 = data
                 .sort((a, b) => b.count - a.count)
                 .slice(0, 10);
