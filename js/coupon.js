@@ -18,7 +18,9 @@
                 showLoading();
 
                 // 실제 API 호출
-                const response = await fetch(`${API_BASE_URL}${COUPON_ENDPOINT}`);
+                const response = await fetch(`${API_BASE_URL}${COUPON_ENDPOINT}`, {
+                    credentials: 'include'
+                });
                 if (!response.ok) {
                     throw new Error('쿠폰 목록을 불러오는데 실패했습니다.');
                 }
