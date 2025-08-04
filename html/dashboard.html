@@ -8,18 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        body {
-            overflow-y: auto;  /* ✅ 수직 스크롤 가능 */
-            height: 100vh;      /* 뷰포트 기준 높이 */
-            margin: 0;
-        }
 
         .main-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 24px;
             justify-content: space-between;
-            padding-bottom: 60px;
         }
 
         .dashboard-card {
@@ -219,6 +213,8 @@
                 }]
             },
             options: {
+                maintainAspectRatio: false,
+                responsive: true,
                 scales: {
                     x: {
                         ticks: {
