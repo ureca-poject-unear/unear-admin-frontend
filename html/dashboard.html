@@ -121,7 +121,7 @@
     <!-- 기존 form + dashboard-toggle 분리 → 하나의 filter-wrapper로 통합 -->
     <div class="filter-wrapper">
         <div class="dashboard-toggle">
-            <button onclick="showSection('summary')" class="submit-button">요약 대시보드</button>
+            <button onclick="showSection('summary')" class="submit-button">사용자 행동 통계</button>
             <button onclick="showSection('event')" class="submit-button">이벤트 통계</button>
         </div>
         <form id="filter-form" class="filter-form">
@@ -172,7 +172,7 @@
             <div class="chart-wrapper"><canvas id="eventChart"></canvas></div>
         </div>
         <div class="card dashboard-card">
-            <div class="card-title">이벤트 완료율/이탈율</div>
+            <div class="card-title">이벤트 참여 통계</div>
             <div class="chart-wrapper"><canvas id="completionChart"></canvas></div>
         </div>
     </div>
@@ -221,15 +221,44 @@
     function renderSummary(type, data, canvasId, chartType) {
         const ctx = document.getElementById(canvasId).getContext('2d');
         if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
-        let labels, counts;
 
+        const categoryLabelMap = {
+            life: '생활',
+            culture: '문화',
+            cafe: '카페',
+            food: '음식',
+            education: '교육',
+            bakery: '베이커리',
+            shopping: '쇼핑',
+            activity: '액티비티',
+            beauty: '뷰티'
+        };
+
+        let datasetLabel = '';
+        switch (type) {
+            case 'category':
+                datasetLabel = '카테고리';
+                break;
+            case 'keyword':
+                datasetLabel = '검색량';
+                break;
+            case 'activate':
+                datasetLabel = '활성도';
+                break;
+            default:
+                datasetLabel = `${type} 수`;
+        }
+
+        let labels, counts;
         if (type === 'activate') {
             const sorted = data.filter(d => d.keyword >= 6 && d.keyword <= 23).sort((a, b) => a.keyword - b.keyword);
             labels = sorted.map(d => `${d.keyword}시`);
             counts = sorted.map(d => d.count);
         } else {
             const top10 = data.sort((a, b) => b.count - a.count).slice(0, 10);
-            labels = top10.map(d => d.keyword);
+            labels = top10.map(d =>
+                type === 'category' ? (categoryLabelMap[d.keyword] || d.keyword) : d.keyword
+            );
             counts = top10.map(d => d.count);
         }
 
@@ -238,7 +267,7 @@
             data: {
                 labels: labels,
                 datasets: [{
-                    label: `${type} 수`,
+                    label: datasetLabel,
                     data: counts,
                     backgroundColor: 'rgba(102, 126, 234, 0.6)',
                     borderColor: 'rgba(102, 126, 234, 1)',
@@ -258,9 +287,9 @@
                     x: {
                         ticks: {
                             autoSkip: false,
-                            maxRotation: 0,     // 회전 없음
-                            minRotation: 0,     // 회전 없음
-                            padding: 8,         // 라벨과 축 사이 간격
+                            maxRotation: 0,
+                            minRotation: 0,
+                            padding: 8,
                             color: '#333',
                             font: { size: 12, weight: '500' }
                         }
@@ -270,9 +299,9 @@
                     }
                 }
             }
-
         });
     }
+
 
     function showSection(section) {
         const summary = document.getElementById('summary-section');
@@ -319,13 +348,13 @@
             data: {
                 labels,
                 datasets: [{
-                    label: '방문 수',
+                    label: '관심도',
                     data: counts,
                     backgroundColor: 'rgba(255,99,132,0.6)'
                 }]
             },
             options: {
-                indexAxis: 'y',  // ← 요거 하나로 가로 방향 전환
+                indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
@@ -434,9 +463,33 @@
         </tr>
     `).join('');
     }
+    // 로그아웃 함수 정의
+    async function handleLogout() {
+        try {
+            const res = await fetch('https://dev.unear.site/api/admin/auth/logout', {
+                method: 'POST',
+                credentials: 'include' // 세션/쿠키 포함
+            });
+
+            if (res.ok) {
+                alert('로그아웃 되었습니다.');
+                // 필요시 localStorage/sessionStorage 초기화
+                localStorage.clear();
+                sessionStorage.clear();
+
+                window.location.href = '/index.html'; // 로그인 화면으로 리다이렉트
+            } else {
+                alert('로그아웃 실패');
+            }
+        } catch (error) {
+            console.error('로그아웃 에러:', error);
+            alert('에러 발생. 다시 시도해주세요.');
+        }
+    }
+
+
 
     function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
-    function handleLogout() { alert('로그아웃 처리 예정'); }
     window.addEventListener('DOMContentLoaded', () => {
         showSection('summary');
     });
