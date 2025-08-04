@@ -48,7 +48,7 @@
 
         /* 그래프 wrapper 높이 조정 */
         .chart-wrapper {
-            height: 520px;  /* 기존보다 살짝 줄임 */
+            height: 500px;  /* 기존보다 살짝 줄임 */
         }
 
 
@@ -194,13 +194,9 @@
             labels = sorted.map(d => `${d.hour}시`);
             counts = sorted.map(d => d.count);
         } else {
-            const top10 = data
-                .sort((a, b) => b.count - a.count)  // count 기준 내림차순 정렬
-                .slice(0, 10);                       // 상위 10개만
-            labels = top10.map(d => d.keyword);
-            counts = top10.map(d => d.count);
+            labels = data.map(d => d.keyword);
+            counts = data.map(d => d.count);
         }
-
         document.getElementById(canvasId).style.height = '300px';
         const ctx = document.getElementById(canvasId).getContext('2d');
         if (chartInstances[canvasId]) {
@@ -235,9 +231,9 @@
                     }
                 }
             }
+
         });
     }
-
 
     function capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
