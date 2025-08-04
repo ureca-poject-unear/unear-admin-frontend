@@ -6,6 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/main.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .main-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .dashboard-card {
+            flex: 1 1 calc(33% - 20px);
+            min-width: 320px;
+            max-height: 700px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-card {
+                flex: 1 1 100%;
+            }
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -50,20 +81,14 @@
         <button type="submit" class="card-action" style="height: fit-content;">조회</button>
     </form>
 
-    <!-- 대시보드 카드 3개 -->
+    <!-- 대시보드 카드 -->
     <div class="main-grid">
         <!-- 인기 검색어 -->
         <div class="card dashboard-card">
             <div class="card-icon">🔍</div>
             <div class="card-title">인기 검색어</div>
             <div class="card-description">최근 인기 키워드를 확인하세요</div>
-            <canvas id="chartKeyword" height="300" style="margin-bottom: 20px;"></canvas>
-            <table>
-                <thead>
-                <tr><th>항목</th><th>카운트</th><th>유니크 유저 수</th></tr>
-                </thead>
-                <tbody id="tableKeyword"></tbody>
-            </table>
+            <canvas id="chartKeyword" height="300"></canvas>
         </div>
 
         <!-- 관심 카테고리 -->
@@ -71,13 +96,7 @@
             <div class="card-icon">📂</div>
             <div class="card-title">관심 카테고리</div>
             <div class="card-description">사용자의 관심 카테고리를 분석합니다</div>
-            <canvas id="chartCategory" height="300" style="margin-bottom: 20px;"></canvas>
-            <table>
-                <thead>
-                <tr><th>항목</th><th>카운트</th><th>유니크 유저 수</th></tr>
-                </thead>
-                <tbody id="tableCategory"></tbody>
-            </table>
+            <canvas id="chartCategory" height="300"></canvas>
         </div>
 
         <!-- 시간대별 활성도 -->
@@ -85,13 +104,7 @@
             <div class="card-icon">⏰</div>
             <div class="card-title">시간대별 활성도</div>
             <div class="card-description">어느 시간대에 활동이 가장 많은지 확인하세요</div>
-            <canvas id="chartActivate" height="300" style="margin-bottom: 20px;"></canvas>
-            <table>
-                <thead>
-                <tr><th>시간</th><th>카운트</th><th>유니크 유저 수</th></tr>
-                </thead>
-                <tbody id="tableActivate"></tbody>
-            </table>
+            <canvas id="chartActivate" height="300"></canvas>
         </div>
     </div>
 </div>
@@ -138,7 +151,7 @@
                 }
 
                 const result = await res.json();
-                renderSummary(type, result, `chart${capitalize(type)}`, `table${capitalize(type)}`, type === 'activate' ? 'line' : 'bar');
+                renderChartOnly(type, result, `chart${capitalize(type)}`, type === 'activate' ? 'line' : 'bar');
             } catch (err) {
                 console.error(`🚨 요청 중 예외 발생 [${type}]:`, err);
                 alert(`데이터 요청 오류 (${type})`);
@@ -146,7 +159,7 @@
         }
     });
 
-    function renderSummary(type, data, canvasId, tableId, chartType) {
+    function renderChartOnly(type, data, canvasId, chartType) {
         let labels, counts;
 
         if (type === 'activate') {
@@ -154,7 +167,6 @@
                 .sort((a, b) => a.hour - b.hour);
             labels = sorted.map(d => `${d.hour}시`);
             counts = sorted.map(d => d.count);
-            data = sorted;
         } else {
             labels = data.map(d => d.keyword);
             counts = data.map(d => d.count);
@@ -187,15 +199,6 @@
                 }
             }
         });
-
-        const tbody = document.getElementById(tableId);
-        tbody.innerHTML = data.map(d => `
-            <tr>
-                <td>${type === 'activate' ? `${d.keyword}시` : d.keyword}</td>
-                <td>${d.count}</td>
-                <td>${d.distinctUserCount}</td>
-            </tr>
-        `).join('');
     }
 
     function capitalize(str) {
@@ -206,6 +209,5 @@
         alert('로그아웃 처리 예정');
     }
 </script>
-
 </body>
 </html>
