@@ -8,23 +8,31 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        body {
+            overflow-y: auto;  /* ✅ 수직 스크롤 가능 */
+            height: 100vh;      /* 뷰포트 기준 높이 */
+            margin: 0;
+        }
+
         .main-grid {
             display: flex;
             flex-wrap: wrap;
+            gap: 24px;
             justify-content: space-between;
-            gap: 20px;
+            padding-bottom: 60px;
         }
 
         .dashboard-card {
-            flex: 1 1 calc(33.333% - 20px); /* 정확히 3등분 */
+            flex: 1 1 calc(33.333% - 24px);
             min-width: 300px;
-            max-width: calc(33.333% - 20px);
+            max-width: calc(33.333% - 24px);
             box-sizing: border-box;
-            padding: 20px;
+            padding: 24px;
             border-radius: 16px;
             background-color: white;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
         }
+
 
 
         .chart-wrapper {
@@ -90,31 +98,28 @@
     <div class="main-grid">
         <!-- 인기 검색어 -->
         <div class="card dashboard-card">
-            <div class="card-icon">🔍</div>
             <div class="card-title">인기 검색어</div>
             <div class="card-description">최근 인기 키워드를 확인하세요</div>
             <div class="chart-wrapper">
-                <canvas id="chartKeyword"></canvas>
+                <canvas id="chartKeyword" style="height: 300px;"></canvas>
             </div>
         </div>
 
         <!-- 관심 카테고리 -->
         <div class="card dashboard-card">
-            <div class="card-icon">📂</div>
             <div class="card-title">관심 카테고리</div>
             <div class="card-description">사용자의 관심 카테고리를 분석합니다</div>
             <div class="chart-wrapper">
-                <canvas id="chartCategory"></canvas>
+                <canvas id="chartCategory" style="height: 300px;"></canvas>
             </div>
         </div>
 
         <!-- 시간대별 활성도 -->
         <div class="card dashboard-card">
-            <div class="card-icon">⏰</div>
             <div class="card-title">시간대별 활성도</div>
             <div class="card-description">어느 시간대에 활동이 가장 많은지 확인하세요</div>
             <div class="chart-wrapper">
-                <canvas id="chartActivate"></canvas>
+                <canvas id="chartActivate" style="height: 300px;"></canvas>
             </div>
         </div>
     </div>
@@ -180,7 +185,7 @@
             labels = data.map(d => d.keyword);
             counts = data.map(d => d.count);
         }
-
+        canvas.style.height = '300px';
         const ctx = document.getElementById(canvasId).getContext('2d');
         if (chartInstances[canvasId]) {
             chartInstances[canvasId].destroy();
