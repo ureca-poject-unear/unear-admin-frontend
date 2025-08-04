@@ -32,36 +32,81 @@
             flex-direction: column;
         }
         .card-title { font-size: 20px; margin-bottom: 4px; }
-        .card-description { font-size: 13px; margin-bottom: 8px; }
         .chart-wrapper { height: 600px; }
-        .filter-form, .dashboard-toggle {
+
+        #filter-form {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 16px;
             align-items: flex-end;
         }
-        .form-group {
+
+        /* 버튼 그룹 정렬 */
+        .dashboard-toggle {
             display: flex;
-            flex-direction: column;
-            min-width: 120px;
+            gap: 12px;
+            height: 40px;
+            align-items: flex-end;  /* ✅ 버튼 하단 정렬로 맞춤 */
         }
-        .form-group select, .form-group input[type="month"] {
-            padding: 8px;
-            font-size: 14px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+
+
+        /* 통합 wrapper */
+        .filter-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;  /* ✅ 여기 핵심: 하단 정렬로 통일 */
+            gap: 32px;
+            flex-wrap: wrap;
+            margin: 24px 0;
         }
+
+        /* 버튼 높이 통일 */
         .submit-button {
-            padding: 9px 16px;
+            padding: 9px 20px;
             background-color: #667eea;
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 14px;
             cursor: pointer;
+            height: 40px;  /* 모든 버튼 높이 통일 */
+            box-sizing: border-box;
         }
-        .submit-button:hover { background-color: #5a67d8; }
+
+        /* toggle 버튼 스타일 */
+        .dashboard-toggle .submit-button {
+            background-color: #d0d8ff; /* 더 진한 연보라 */
+            color: #3f51b5;            /* 가독성 좋은 남색 계열 */
+            font-weight: 500;
+        }
+
+
+        .dashboard-toggle .submit-button.active {
+            background-color: #4C6EF5;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #4C6EF5;
+        }
+
+
+
+        .form-group {
+            min-width: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* 하단 정렬 */
+        }
+        .form-group select,
+        .form-group input[type="month"] {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            height: 40px;
+        }
+
+        .submit-button:hover {
+            background-color: #7e9dfc; /* 연한 블루톤 */
+        }
         body { overflow-x: hidden; }
     </style>
 </head>
@@ -73,35 +118,38 @@
             <button class="logout-btn" onclick="handleLogout()">로그아웃</button></div>
     </div>
 
-    <div class="dashboard-toggle">
-        <button onclick="showSection('summary')" class="submit-button">요약 대시보드</button>
-        <button onclick="showSection('event')" class="submit-button">이벤트 통계</button>
+    <!-- 기존 form + dashboard-toggle 분리 → 하나의 filter-wrapper로 통합 -->
+    <div class="filter-wrapper">
+        <div class="dashboard-toggle">
+            <button onclick="showSection('summary')" class="submit-button">요약 대시보드</button>
+            <button onclick="showSection('event')" class="submit-button">이벤트 통계</button>
+        </div>
+        <form id="filter-form" class="filter-form">
+            <div class="form-group">
+                <select id="ageGroup">
+                    <option value="">연령대</option>
+                    <option value="10s">10대</option>
+                    <option value="20s">20대</option>
+                    <option value="30s">30대</option>
+                    <option value="40s">40대</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select id="gender">
+                    <option value="">성별</option>
+                    <option value="M">남성</option>
+                    <option value="F">여성</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="month" id="yearMonth" placeholder="월 선택" />
+            </div>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button type="submit" class="submit-button">조회</button>
+            </div>
+        </form>
     </div>
-
-    <form id="filter-form" class="filter-form">
-        <div class="form-group">
-            <label for="ageGroup">연령대</label>
-            <select id="ageGroup">
-                <option value="">전체</option><option value="10s">10대</option>
-                <option value="20s">20대</option><option value="30s">30대</option>
-                <option value="40s">40대</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="gender">성별</label>
-            <select id="gender">
-                <option value="">전체</option><option value="M">남성</option><option value="F">여성</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="yearMonth">월 선택</label>
-            <input type="month" id="yearMonth" required />
-        </div>
-        <div class="form-group">
-            <label>&nbsp;</label>
-            <button type="submit" class="submit-button">조회</button>
-        </div>
-    </form>
 
     <div id="summary-section" class="main-grid three-column">
         <div class="card dashboard-card">
@@ -145,17 +193,30 @@
         const gender = document.getElementById('gender').value;
         const yearMonth = document.getElementById('yearMonth').value;
 
-        const types = ['keyword', 'category', 'activate'];
-        for (const type of types) {
-            const params = new URLSearchParams({ type, yearMonth });
-            if (ageGroup) params.append('ageGroup', ageGroup);
-            if (gender) params.append('gender', gender);
+        // 현재 보여지는 섹션 파악
+        const isSummaryVisible = document.getElementById('summary-section').style.display !== 'none';
+        const isEventVisible = document.getElementById('event-section').style.display !== 'none';
 
-            const res = await fetch(`${BASE_URL}/admin/admin/summary?${params.toString()}`);
-            const result = await res.json();
-            renderSummary(type, result, `chart${capitalize(type)}`, type === 'activate' ? 'line' : 'bar');
+        // 🔹 요약 대시보드인 경우: 3개 타입 반복 조회
+        if (isSummaryVisible) {
+            const types = ['keyword', 'category', 'activate'];
+            for (const type of types) {
+                const params = new URLSearchParams({ type, yearMonth });
+                if (ageGroup) params.append('ageGroup', ageGroup);
+                if (gender) params.append('gender', gender);
+
+                const res = await fetch(`${BASE_URL}/admin/admin/summary?${params.toString()}`);
+                const result = await res.json();
+                renderSummary(type, result, `chart${capitalize(type)}`, type === 'activate' ? 'line' : 'bar');
+            }
+        }
+
+        // 🔹 이벤트 통계인 경우: 통계 API 호출
+        if (isEventVisible) {
+            await loadEventStats();  // ← 여기서 이벤트 통계 차트와 테이블 업데이트
         }
     });
+
 
     function renderSummary(type, data, canvasId, chartType) {
         const ctx = document.getElementById(canvasId).getContext('2d');
@@ -190,8 +251,26 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { x: { ticks: { autoSkip: false } }, y: { beginAtZero: true } }
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            autoSkip: false,
+                            maxRotation: 0,     // 회전 없음
+                            minRotation: 0,     // 회전 없음
+                            padding: 8,         // 라벨과 축 사이 간격
+                            color: '#333',
+                            font: { size: 12, weight: '500' }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
+
         });
     }
 
@@ -211,70 +290,139 @@
             event.classList.add('two-column');
             loadEventStats();
         }
+        document.querySelectorAll('.dashboard-toggle .submit-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeBtn = document.querySelector(`.dashboard-toggle .submit-button[onclick="showSection('${section}')"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+
     }
 
 
     async function loadEventStats() {
-        const yearMonth = document.getElementById('yearMonth').value;
+        // 🔹 1. 필터 값 받기
         const ageGroup = document.getElementById('ageGroup').value;
         const gender = document.getElementById('gender').value;
-        const params = new URLSearchParams({ yearMonth });
-        if (ageGroup) params.append('ageGroup', ageGroup);
-        if (gender) params.append('gender', gender);
+        const dynamicMonth = document.getElementById('yearMonth').value;
+        const fixedMonth = '2025-08';  // 🔒 고정된 월 (인기 이벤트 매장용)
 
-        const res1 = await fetch(`${BASE_URL}/admin/admin/summary/event-place?yearMonth=${yearMonth}`);
+        // 🔹 2. 인기 이벤트 매장 순위 (항상 8월)
+        const res1 = await fetch(`${BASE_URL}/admin/admin/summary/event-place?yearMonth=${fixedMonth}`);
         const data1 = await res1.json();
-        const sorted = data1.sort((a, b) => b.count - a.count);
+        const sorted = data1.sort((a, b) => b.count - a.count).slice(0, 15);
         const labels = sorted.map(d => d.keyword);
         const counts = sorted.map(d => d.count);
         const ctx1 = document.getElementById('eventChart').getContext('2d');
         if (chartInstances['eventChart']) chartInstances['eventChart'].destroy();
         chartInstances['eventChart'] = new Chart(ctx1, {
             type: 'bar',
-            data: { labels, datasets: [{ label: '방문 수', data: counts, backgroundColor: 'rgba(255,99,132,0.6)' }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            data: {
+                labels,
+                datasets: [{
+                    label: '방문 수',
+                    data: counts,
+                    backgroundColor: 'rgba(255,99,132,0.6)'
+                }]
+            },
+            options: {
+                indexAxis: 'y',  // ← 요거 하나로 가로 방향 전환
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#333',
+                            font: { size: 12, weight: '500' }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#333',
+                            font: { size: 12, weight: '500' }
+                        }
+                    }
+                }
+            }
         });
+
+
+        // 🔹 3. 완료율/이탈율 통계 (필터 반영)
+        const params = new URLSearchParams({ yearMonth: dynamicMonth });
+        if (ageGroup) params.append('ageGroup', ageGroup);
+        if (gender) params.append('gender', gender);
 
         const res2 = await fetch(`${BASE_URL}/admin/admin/summary/event-stats?${params}`);
         const data2 = await res2.json();
-        console.log('✅ 이벤트 통계 데이터:', data2);  // ← 디버깅용
-        const group = data2[0];
+        const group = data2[0] || {};
         const totalJoin = group.joinCount || 0;
         const totalDone = group.doneCount || 0;
         const totalDrop = group.dropCount || 0;
-        const doneRate = +(group.completionRate * 100).toFixed(1); // ← 소수점 퍼센트
-        const dropRate = +(group.dropRate * 100).toFixed(1);
-
+        const doneRate = +(group.completionRate * 100 || 0).toFixed(1);
+        const dropRate = +(group.dropRate * 100 || 0).toFixed(1);
 
         const ctx2 = document.getElementById('completionChart').getContext('2d');
         if (chartInstances['completionChart']) chartInstances['completionChart'].destroy();
-
         chartInstances['completionChart'] = new Chart(ctx2, {
             type: 'bar',
             data: {
                 labels: ["참여자 수", "완료자 수", "이탈자 수", "완료율 (%)", "이탈율 (%)"],
-                datasets: [{
-                    label: '이벤트 통계',
-                    data: [totalJoin, totalDone, totalDrop, doneRate, dropRate], // ✅ 숫자만
-                    backgroundColor: ['#36A2EB', '#4BC0C0', '#FF6384', '#9966FF', '#FF9F40']
-                }]
+                datasets: [
+                    {
+                        label: '인원 수',
+                        data: [totalJoin, totalDone, totalDrop, null, null],
+                        backgroundColor: ['#36A2EB', '#4BC0C0', '#FF6384', 'transparent', 'transparent'],
+                        yAxisID: 'y',
+                    },
+                    {
+                        label: '비율 (%)',
+                        data: [null, null, null, doneRate, dropRate],
+                        backgroundColor: ['transparent', 'transparent', 'transparent', '#9966FF', '#FF9F40'],
+                        yAxisID: 'y1',
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 0,
+                            minRotation: 0,
+                            color: '#333',
+                            font: { size: 12, weight: '500' }
+                        }
+                    },
                     y: {
                         beginAtZero: true,
-                        suggestedMax: 100, // 비율 대비 y축 예쁘게
+                        title: { display: true, text: '인원 수' },
                         ticks: {
-                            callback: value => value + '%'
+                            color: '#333',
+                            font: { size: 12, weight: '500' }
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        title: { display: true, text: '비율 (%)' },
+                        ticks: {
+                            callback: value => `${value}%`,
+                            color: '#666',
+                            font: { size: 12, weight: '500' }
+                        },
+                        grid: {
+                            drawOnChartArea: false
                         }
                     }
                 },
                 plugins: { legend: { display: false } }
             }
         });
-
+        // 🔹 4. 테이블 갱신
         document.getElementById('statsTableBody').innerHTML = data2.map(d => `
         <tr>
             <td>${d.group || '전체'}</td>
@@ -285,10 +433,13 @@
             <td>${(d.dropRate * 100).toFixed(1)}%</td>
         </tr>
     `).join('');
-
     }
+
     function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
     function handleLogout() { alert('로그아웃 처리 예정'); }
+    window.addEventListener('DOMContentLoaded', () => {
+        showSection('summary');
+    });
 </script>
 </body>
 </html>
