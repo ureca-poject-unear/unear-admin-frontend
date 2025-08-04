@@ -183,23 +183,22 @@
         let labels, counts;
 
         if (type === 'activate') {
+            // ✅ 전체 24시간 다 보여주기 (정렬만 하고 slice 제거)
             const sorted = data
                 .map(d => ({ ...d, hour: parseInt(d.keyword) }))
-                .sort((a, b) => a.hour - b.hour)
-                .slice(0, 10); // 상위 10시간만 (선택적)
+                .sort((a, b) => a.hour - b.hour);
             labels = sorted.map(d => `${d.hour}시`);
             counts = sorted.map(d => d.count);
         } else {
+            // ✅ 상위 10개만 보여주기
             const top10 = data
-                .sort((a, b) => b.count - a.count)  // count 기준 내림차순 정렬
-                .slice(0, 10);                      // 상위 10개만 추출
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 10);
             labels = top10.map(d => d.keyword);
             counts = top10.map(d => d.count);
         }
 
         const ctx = document.getElementById(canvasId).getContext('2d');
-
-        // 기존 차트 파괴
         if (chartInstances[canvasId]) {
             chartInstances[canvasId].destroy();
         }
@@ -225,7 +224,7 @@
                 scales: {
                     x: {
                         ticks: {
-                            autoSkip: false,
+                            autoSkip: false,     // ✅ label 생략 비활성화
                             maxRotation: 0,
                             minRotation: 0,
                             font: { size: 12 }
@@ -246,6 +245,7 @@
             }
         });
     }
+
 
 
     function capitalize(str) {
