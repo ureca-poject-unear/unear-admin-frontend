@@ -185,7 +185,7 @@
             labels = data.map(d => d.keyword);
             counts = data.map(d => d.count);
         }
-        canvas.style.height = '300px';
+        document.getElementById(canvasId).style.height = '300px';
         const ctx = document.getElementById(canvasId).getContext('2d');
         if (chartInstances[canvasId]) {
             chartInstances[canvasId].destroy();
